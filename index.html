@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lifetime Missed Salah & Qaza Calculator | Accurate Islamic Calculation</title>
+  <meta name="description" content="Calculate your lifetime missed Salah and remaining Qaza prayers transparently based on your regular, partial, and no-prayer periods, with accurate calendar calculations and menstruation deductions.">
+  <meta name="keywords" content="missed salah calculator, qaza namaz calculator, qada salah, islamic prayer tracker, prayer debt calculation">
+  <meta name="theme-color" content="#03140f">
+
+  <!-- Google Fonts: Outfit, Plus Jakarta Sans, Amiri -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- App Header -->
+    <header class="app-header">
+      <div class="bismillah" aria-label="Bismillahir Rahmanir Raheem">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
+      <div class="app-brand">
+        <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 6v6l4 2"></path>
+          <path d="m16.2 7.8 2-2"></path>
+        </svg>
+        <h1 class="app-title">Lifetime Missed Salah Calculator</h1>
+      </div>
+      <p class="app-subtitle">Transparent, calendar-accurate estimation of your missed obligatory prayers and remaining Qaza.</p>
+      
+      <div class="header-actions">
+        <button id="btnSoundToggle" class="btn-icon-toggle" aria-label="Toggle Sound Effects" title="Toggle audio feedback">
+          <svg id="iconSoundOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+          </svg>
+          <svg id="iconSoundOff" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="23" y1="9" x2="17" y2="15"></line>
+            <line x1="17" y1="9" x2="23" y2="15"></line>
+          </svg>
+        </button>
+        <button id="btnThemeToggle" class="btn-icon-toggle" aria-label="Toggle Theme" title="Toggle Light/Dark Theme">
+          <svg id="iconThemeDark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg id="iconThemeLight" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- STEPPER PROGRESS CONTAINER -->
+    <div id="stepperNav" class="stepper-container">
+      <div class="stepper-header">
+        <span class="stepper-title" id="stepperStepName">Step 1 of 6: Your Gender</span>
+        <span class="stepper-counter" id="stepperCounter">1 / 6</span>
+      </div>
+      <div class="progress-track">
+        <div id="progressFill" class="progress-fill" style="width: 16.6%;"></div>
+      </div>
+      <div class="stepper-dots" id="stepperDotsContainer">
+        <!-- Injected via JavaScript for quick step clicks -->
+      </div>
+    </div>
+
+    <!-- MAIN INTERACTIVE WIZARD CARD -->
+    <main id="wizardCard" class="wizard-card">
+
+      <!-- STEP 1: Select Gender & Name -->
+      <section id="step1" class="step-view active" aria-labelledby="step1Title">
+        <div class="step-badge">Step 1</div>
+        <h2 id="step1Title" class="step-title">What is your gender?</h2>
+        <p class="step-description">We ask this because in Islamic jurisprudence, women have days of menstruation where Salah is not obligatory.</p>
+
+        <div class="form-group">
+          <label class="form-label">Your Name (Optional)</label>
+          <input type="text" id="inputName" class="input-field" placeholder="e.g. Abdullah, Fatima, etc." autocomplete="given-name">
+          <div class="form-hint">Used for personalizing your results summary.</div>
+        </div>
+
+        <div class="choice-grid">
+          <div class="choice-card selected" id="choiceMale" data-gender="male" tabindex="0" role="button" aria-pressed="true">
+            <svg class="choice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="10" cy="14" r="5"></circle>
+              <line x1="19" y1="5" x2="13.6" y2="10.4"></line>
+              <line x1="19" y1="5" x2="14" y2="5"></line>
+              <line x1="19" y1="5" x2="19" y2="10"></line>
+            </svg>
+            <span class="choice-label">Male</span>
+          </div>
+
+          <div class="choice-card" id="choiceFemale" data-gender="female" tabindex="0" role="button" aria-pressed="false">
+            <svg class="choice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="9" r="5"></circle>
+              <line x1="12" y1="14" x2="12" y2="21"></line>
+              <line x1="9" y1="18" x2="15" y2="18"></line>
+            </svg>
+            <span class="choice-label">Female</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2: Date of Birth -->
+      <section id="step2" class="step-view" aria-labelledby="step2Title">
+        <div class="step-badge">Step 2</div>
+        <h2 id="step2Title" class="step-title">What is your date of birth?</h2>
+        <p class="step-description">We calculate your age and timeline using exact calendar days up to today (<span id="currentDateDisplay">Today</span>).</p>
+
+        <div class="form-group">
+          <div class="dob-inputs-grid">
+            <div class="dob-col dob-col-day">
+              <label class="form-label" for="dobDay">Day</label>
+              <input type="number" id="dobDay" class="input-field" min="1" max="31" placeholder="DD" value="15">
+            </div>
+            <div class="dob-col dob-col-month">
+              <label class="form-label" for="dobMonth">Month</label>
+              <select id="dobMonth" class="input-field">
+                <option value="1">1 - Jan</option>
+                <option value="2">2 - Feb</option>
+                <option value="3">3 - Mar</option>
+                <option value="4">4 - Apr</option>
+                <option value="5" selected>5 - May</option>
+                <option value="6">6 - Jun</option>
+                <option value="7">7 - Jul</option>
+                <option value="8">8 - Aug</option>
+                <option value="9">9 - Sep</option>
+                <option value="10">10 - Oct</option>
+                <option value="11">11 - Nov</option>
+                <option value="12">12 - Dec</option>
+              </select>
+            </div>
+            <div class="dob-col dob-col-year">
+              <label class="form-label" for="dobYear">Year of Birth</label>
+              <input type="number" id="dobYear" class="input-field" min="1920" max="2026" placeholder="YYYY (e.g. 1998)" value="1998">
+            </div>
+          </div>
+          <!-- Hidden fallback date input kept in sync for compatibility -->
+          <input type="date" id="inputDOB" style="display:none;" value="1998-05-15">
+          <div class="form-hint" id="calculatedAgeNote">Age today: ~28 years old (Born: May 15, 1998)</div>
+        </div>
+
+        <div class="preset-pills">
+          <span style="font-size:0.8rem; color:var(--text-muted); align-self:center;">Quick Age Presets:</span>
+          <button type="button" class="preset-pill" onclick="window.setPresetDOB(20)">20 yrs old</button>
+          <button type="button" class="preset-pill" onclick="window.setPresetDOB(25)">25 yrs old</button>
+          <button type="button" class="preset-pill" onclick="window.setPresetDOB(30)">30 yrs old</button>
+          <button type="button" class="preset-pill" onclick="window.setPresetDOB(35)">35 yrs old</button>
+          <button type="button" class="preset-pill" onclick="window.setPresetDOB(40)">40 yrs old</button>
+          <button type="button" class="preset-pill" onclick="window.setPresetDOB(50)">50 yrs old</button>
+        </div>
+      </section>
+
+      <!-- STEP 3: Mandatory Age -->
+      <section id="step3" class="step-view" aria-labelledby="step3Title">
+        <div class="step-badge">Step 3</div>
+        <h2 id="step3Title" class="step-title">At what age did Salah become mandatory for you?</h2>
+        
+        <div class="islamic-guidance-box" id="guidancePuberty">
+          <svg class="guidance-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <div class="guidance-content">
+            <strong class="guidance-title">Islamic Jurisprudence Guidance:</strong>
+            <span id="guidanceTextMale">Usually this is associated with reaching puberty, such as experiencing a wet dream/ejaculation (maniy) or developing pubic hair. Enter the age that applies to you.</span>
+            <span id="guidanceTextFemale" style="display: none;">Enter the age when you reached puberty / began menstruation, according to the basis you follow.</span>
+          </div>
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-header">
+            <label class="form-label" for="sliderMandatoryAge">Mandatory Age (Years):</label>
+            <span class="slider-val-display" id="displayMandatoryAge">14 years</span>
+          </div>
+          <input type="range" id="sliderMandatoryAge" class="range-slider" min="9" max="18" step="0.5" value="14">
+        </div>
+
+        <div class="preset-pills">
+          <span style="font-size:0.8rem; color:var(--text-muted); align-self:center;">Common ages:</span>
+          <button type="button" class="preset-pill" onclick="window.setMandatoryAge(12)">12 years</button>
+          <button type="button" class="preset-pill" onclick="window.setMandatoryAge(13)">13 years</button>
+          <button type="button" class="preset-pill" onclick="window.setMandatoryAge(14)">14 years</button>
+          <button type="button" class="preset-pill" onclick="window.setMandatoryAge(15)">15 years (Default Islamic maximum)</button>
+        </div>
+
+        <div class="form-hint" id="salahStartDateNotice" style="margin-top: 1rem; color: var(--text-gold);">
+          Salah became obligatory around: <strong>May 15, 2012</strong>. Prayers before this date are not counted.
+        </div>
+      </section>
+
+      <!-- STEP 4: Regular Prayer Period -->
+      <section id="step4" class="step-view" aria-labelledby="step4Title">
+        <div class="step-badge">Step 4</div>
+        <h2 id="step4Title" class="step-title">For how long did you pray all 5 Salah regularly?</h2>
+        <p class="step-description">During this period you prayed 5 out of 5 daily prayers without missing. <strong>Missed Salah = 0</strong>.</p>
+
+        <div class="duration-inputs-row">
+          <div class="duration-col">
+            <label for="regYears">Years</label>
+            <div class="input-with-unit">
+              <input type="number" id="regYears" class="input-field" min="0" max="80" value="0">
+              <span class="input-unit-tag">yrs</span>
+            </div>
+          </div>
+          <div class="duration-col">
+            <label for="regMonths">Months</label>
+            <div class="input-with-unit">
+              <input type="number" id="regMonths" class="input-field" min="0" max="11" value="0">
+              <span class="input-unit-tag">mos</span>
+            </div>
+          </div>
+          <div class="duration-col">
+            <label for="regDays">Days</label>
+            <div class="input-with-unit">
+              <input type="number" id="regDays" class="input-field" min="0" max="31" value="0">
+              <span class="input-unit-tag">days</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="preset-pills">
+          <span style="font-size:0.8rem; color:var(--text-muted); align-self:center;">Quick Presets:</span>
+          <button type="button" class="preset-pill" onclick="window.setRegularPreset(0,0,0)">None / Never</button>
+          <button type="button" class="preset-pill" onclick="window.setRegularPreset(1,0,0)">1 Year</button>
+          <button type="button" class="preset-pill" onclick="window.setRegularPreset(3,0,0)">3 Years</button>
+          <button type="button" class="preset-pill" onclick="window.setRegularPreset(5,0,0)">5 Years</button>
+          <button type="button" class="preset-pill" onclick="window.setRegularPresetAll()">All My Obligatory Life</button>
+        </div>
+      </section>
+
+      <!-- STEP 5: Partial Prayer Period & Missed / Day -->
+      <section id="step5" class="step-view" aria-labelledby="step5Title">
+        <div class="step-badge">Step 5</div>
+        <h2 id="step5Title" class="step-title">For how long did you pray partially?</h2>
+        <p class="step-description">Enter the duration where you prayed some prayers but missed others on an average day.</p>
+
+        <div class="duration-inputs-row" style="margin-bottom: 1.5rem;">
+          <div class="duration-col">
+            <label for="partYears">Years</label>
+            <div class="input-with-unit">
+              <input type="number" id="partYears" class="input-field" min="0" max="80" value="0">
+              <span class="input-unit-tag">yrs</span>
+            </div>
+          </div>
+          <div class="duration-col">
+            <label for="partMonths">Months</label>
+            <div class="input-with-unit">
+              <input type="number" id="partMonths" class="input-field" min="0" max="11" value="0">
+              <span class="input-unit-tag">mos</span>
+            </div>
+          </div>
+          <div class="duration-col">
+            <label for="partDays">Days</label>
+            <div class="input-with-unit">
+              <input type="number" id="partDays" class="input-field" min="0" max="31" value="0">
+              <span class="input-unit-tag">days</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">During this period, approximately how many Salah did you miss per day?</label>
+          <div class="chip-grid" id="chipGridMissed">
+            <button type="button" class="chip-btn" data-missed="1">
+              1
+              <span class="chip-caption">Prayed 4/5</span>
+            </button>
+            <button type="button" class="chip-btn" data-missed="2">
+              2
+              <span class="chip-caption">Prayed 3/5</span>
+            </button>
+            <button type="button" class="chip-btn active" data-missed="3">
+              3
+              <span class="chip-caption">Prayed 2/5</span>
+            </button>
+            <button type="button" class="chip-btn" data-missed="4">
+              4
+              <span class="chip-caption">Prayed 1/5</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="islamic-guidance-box" style="margin-bottom: 0;">
+          <svg class="guidance-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+          <div class="guidance-content">
+            <strong class="guidance-title">Automatic Period Calculation (Step 5A):</strong>
+            Any remaining obligatory time not covered by Regular or Partial prayer is automatically counted as <strong>No-Prayer period</strong> (5/5 missed per day). You don't have to calculate it manually!
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 6: Qaza Already Prayed -->
+      <section id="step6" class="step-view" aria-labelledby="step6Title">
+        <div class="step-badge">Step 6</div>
+        <h2 id="step6Title" class="step-title">How many Qaza Salah have you already prayed?</h2>
+        <p class="step-description">If you have already been making up missed prayers, enter the total number completed so far. This will be deducted from your total missed to show your <strong>Remaining Qaza</strong>.</p>
+
+        <div class="form-group">
+          <label class="form-label" for="inputQazaDone">Qaza Prayers Made Up So Far:</label>
+          <input type="number" id="inputQazaDone" class="input-field" min="0" step="1" value="0" placeholder="e.g. 200">
+        </div>
+
+        <div class="preset-pills">
+          <span style="font-size:0.8rem; color:var(--text-muted); align-self:center;">Add quick amount:</span>
+          <button type="button" class="preset-pill" onclick="window.addQaza(50)">+50</button>
+          <button type="button" class="preset-pill" onclick="window.addQaza(100)">+100</button>
+          <button type="button" class="preset-pill" onclick="window.addQaza(500)">+500</button>
+          <button type="button" class="preset-pill" onclick="window.addQaza(1000)">+1,000</button>
+          <button type="button" class="preset-pill" onclick="window.setQaza(0)">Reset to 0</button>
+        </div>
+      </section>
+
+      <!-- STEP 7: Menstruation (Female Only) -->
+      <section id="step7" class="step-view" aria-labelledby="step7Title">
+        <div class="step-badge">Step 7 (Female Users)</div>
+        <h2 id="step7Title" class="step-title">On average, how many days per month were you menstruating?</h2>
+        <p class="step-description">During days of menstruation (hayd), prayers are not obligatory and are excluded from your missed Salah count. Clearly labeled as an <strong>estimate</strong> because cycles vary.</p>
+
+        <div class="form-group">
+          <label class="form-label">Average Days Per Month:</label>
+          <div class="chip-grid" id="chipGridMenstruation">
+            <button type="button" class="chip-btn" data-days="2">2</button>
+            <button type="button" class="chip-btn" data-days="3">3</button>
+            <button type="button" class="chip-btn" data-days="4">4</button>
+            <button type="button" class="chip-btn active" data-days="5">5</button>
+            <button type="button" class="chip-btn" data-days="6">6</button>
+            <button type="button" class="chip-btn" data-days="7">7</button>
+          </div>
+        </div>
+
+        <div class="islamic-guidance-box">
+          <svg class="guidance-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <div class="guidance-content">
+            <strong class="guidance-title">Calculation Method:</strong>
+            Number of months in your obligatory period × average menstruation days = Estimated days excluded.
+            Eligible prayer days = Total obligatory days − Estimated menstruation days.
+          </div>
+        </div>
+      </section>
+
+      <!-- Wizard Navigation Buttons -->
+      <footer class="wizard-footer">
+        <button type="button" id="btnPrevStep" class="btn-wizard btn-prev" style="visibility: hidden;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Back
+        </button>
+
+        <button type="button" id="btnNextStep" class="btn-wizard btn-next">
+          Next Step
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </footer>
+
+    </main>
+
+    <!-- ====================================================================
+         RESULTS DASHBOARD
+         ==================================================================== -->
+    <div id="resultsDashboard" class="results-dashboard" aria-live="polite">
+
+      <!-- Action Bar -->
+      <div class="results-action-bar">
+        <button id="btnOpenAdjustDrawer" class="btn-action highlight" title="Adjust inputs and recalculate instantly">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          Adjust My Calculation
+        </button>
+
+        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+          <button id="btnCopySummary" class="btn-action" title="Copy clean summary to clipboard">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            Copy Summary
+          </button>
+          <button id="btnPrintReport" class="btn-action" title="Print report or save to PDF">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            Print / PDF
+          </button>
+          <button id="btnRestartWizard" class="btn-action" title="Restart from Step 1">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="1 4 1 10 7 10"></polyline>
+              <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+            </svg>
+            Recalculate
+          </button>
+        </div>
+      </div>
+
+      <!-- HERO RESULTS CARD -->
+      <section class="hero-results-card">
+        <div class="results-greeting" id="resGreeting">Hey there,</div>
+        <div class="results-headline">
+          You have approximately <span class="highlight-number" id="resTotalMissedText">0</span> missed Salah.
+        </div>
+        <div>
+          <span class="results-percentage-badge" id="resPercentageBadge">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+            That's <span id="resPercentageVal">0%</span> of your obligatory Salah during this period.
+          </span>
+        </div>
+        <p class="results-equivalent-text" id="resEquivalentDurationText">
+          Your missed Salah is equivalent to approximately <strong>0 years, 0 months and 0 days</strong> of all five daily prayers.
+        </p>
+
+        <!-- Metric Trio: Total Missed vs Qaza Already Prayed vs Remaining Qaza -->
+        <div class="metrics-trio-grid">
+          <div class="metric-card">
+            <div class="metric-label">Lifetime Missed Salah</div>
+            <div class="metric-value" id="cardTotalMissed">0</div>
+            <div class="metric-caption">All prayers originally missed</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Qaza Already Prayed</div>
+            <div class="metric-value" id="cardQazaPrayed" style="color: #34d399;">0</div>
+            <div class="metric-caption">Subsequent make-up prayers</div>
+          </div>
+
+          <div class="metric-card hero-gold">
+            <div class="metric-label">Remaining Qaza</div>
+            <div class="metric-value" id="cardRemainingQaza">0</div>
+            <div class="metric-caption">Your outstanding prayer debt</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VISUAL SEGMENTED RATIO BAR -->
+      <section class="visual-ratio-container">
+        <div class="visual-ratio-header">
+          <span style="font-weight: 700; font-size: 0.95rem;">Obligatory Salah Breakdown Ratio</span>
+          <span style="font-size: 0.82rem; color: var(--text-muted);" id="ratioBarStats">Total Obligatory: 0</span>
+        </div>
+        <div class="segmented-bar" aria-label="Visual representation of prayers">
+          <div id="barPrayed" class="segment-slice prayed" style="width: 50%;" title="Regular & Partial Prayed"></div>
+          <div id="barPartialMissed" class="segment-slice partial-missed" style="width: 25%;" title="Partial Missed"></div>
+          <div id="barNoPrayer" class="segment-slice no-prayer" style="width: 25%;" title="No-Prayer Period Missed"></div>
+        </div>
+        <div class="ratio-legend">
+          <div class="legend-item"><span class="legend-dot prayed"></span> Prayed Salah</div>
+          <div class="legend-item"><span class="legend-dot partial-missed"></span> Partial Period Missed</div>
+          <div class="legend-item"><span class="legend-dot no-prayer"></span> No-Prayer Period Missed</div>
+        </div>
+      </section>
+
+      <!-- TWO SUMMARY TABLES (Lifetime Summary & Breakdown) -->
+      <div class="dashboard-tables-grid">
+        
+        <!-- Lifetime Salah Summary Table -->
+        <div class="table-card">
+          <h3 class="table-card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+            Lifetime Salah Summary
+          </h3>
+          <table class="styled-table">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Salah</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Total obligatory Salah</td>
+                <td id="tblTotalObligatory">0</td>
+              </tr>
+              <tr>
+                <td>Total prayed</td>
+                <td id="tblTotalPrayed" style="color: #34d399;">0</td>
+              </tr>
+              <tr>
+                <td>Total missed</td>
+                <td id="tblTotalMissed" style="color: #fb7185;">0</td>
+              </tr>
+              <tr>
+                <td>Qaza already prayed</td>
+                <td id="tblQazaPrayed" style="color: #6ee7b7;">0</td>
+              </tr>
+              <tr class="highlight-row">
+                <td>Remaining Qaza</td>
+                <td id="tblRemainingQaza">0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Missed Salah Breakdown Table -->
+        <div class="table-card">
+          <h3 class="table-card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+            Missed Salah Breakdown
+          </h3>
+          <table class="styled-table">
+            <thead>
+              <tr>
+                <th>Period</th>
+                <th>Missed Salah</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Regular prayer period</td>
+                <td>0</td>
+              </tr>
+              <tr>
+                <td>Partial prayer period</td>
+                <td id="tblPartialMissed">0</td>
+              </tr>
+              <tr>
+                <td>No-prayer period</td>
+                <td id="tblNoPrayerMissed">0</td>
+              </tr>
+              <tr class="highlight-row">
+                <td>Total missed</td>
+                <td id="tblBreakdownTotalMissed">0</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div id="femaleMenstruationCallout" class="female-exclusion-callout" style="display: none;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span>Estimated menstruation days excluded: <strong id="valMenstruationDays">0 days</strong></span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- EXPANDABLE SECTION: How Was This Calculated? -->
+      <section class="accordion-wrapper">
+        <button type="button" class="accordion-trigger" id="btnToggleAudit" aria-expanded="false" aria-controls="auditContent">
+          <span>How was this calculated? (Transparent Step-by-Step)</span>
+          <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="accordion-content" id="auditContent">
+          <div class="audit-steps-list" id="auditStepsContainer">
+            <!-- Dynamically populated with all 7 mathematical steps -->
+          </div>
+        </div>
+      </section>
+
+      <!-- QAZA MAKE-UP ROADMAP / PLANNER -->
+      <section class="qaza-planner-section">
+        <div class="planner-header">
+          <div>
+            <h3 class="planner-title">Make-Up Plan (Qaza Roadmap)</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">See how soon you can complete your Remaining Qaza with consistent daily habits.</p>
+          </div>
+        </div>
+
+        <div class="pace-selector-row">
+          <div class="pace-card" data-pace="1" onclick="window.setPlannerPace(1)">
+            <div class="pace-val">1 / day</div>
+            <div class="pace-label">Gentle pace</div>
+          </div>
+          <div class="pace-card active" data-pace="5" onclick="window.setPlannerPace(5)">
+            <div class="pace-val">5 / day</div>
+            <div class="pace-label">1 with each daily Salah</div>
+          </div>
+          <div class="pace-card" data-pace="10" onclick="window.setPlannerPace(10)">
+            <div class="pace-val">10 / day</div>
+            <div class="pace-label">2 with each daily Salah</div>
+          </div>
+          <div class="pace-card" data-pace="20" onclick="window.setPlannerPace(20)">
+            <div class="pace-val">20 / day</div>
+            <div class="pace-label">Intensive pace</div>
+          </div>
+        </div>
+
+        <div class="completion-prediction-banner">
+          <div class="prediction-text">
+            At a pace of <strong id="plannerPaceDisplay">5 Qaza prayers per day</strong>, you will complete all remaining Qaza in approximately:
+          </div>
+          <div class="prediction-highlight" id="plannerCompletionDate">
+            ~0 years (Estimated: ...)
+          </div>
+        </div>
+
+        <!-- Breakdown by Individual Daily Prayer -->
+        <div style="margin-bottom: 0.75rem; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); display:flex; justify-content:space-between; align-items:center;">
+          <span>Remaining Count by Individual Prayer:</span>
+          <label style="display:inline-flex; align-items:center; gap:0.4rem; cursor:pointer; font-weight:normal; font-size:0.8rem;">
+            <input type="checkbox" id="chkIncludeWitr"> Include Witr (Hanafi)
+          </label>
+        </div>
+
+        <div class="prayers-breakdown-grid">
+          <div class="prayer-counter-card">
+            <div class="prayer-name">Fajr (2 Rakat)</div>
+            <div class="prayer-count" id="countFajr">0</div>
+          </div>
+          <div class="prayer-counter-card">
+            <div class="prayer-name">Dhuhr (4 Rakat)</div>
+            <div class="prayer-count" id="countDhuhr">0</div>
+          </div>
+          <div class="prayer-counter-card">
+            <div class="prayer-name">Asr (4 Rakat)</div>
+            <div class="prayer-count" id="countAsr">0</div>
+          </div>
+          <div class="prayer-counter-card">
+            <div class="prayer-name">Maghrib (3 Rakat)</div>
+            <div class="prayer-count" id="countMaghrib">0</div>
+          </div>
+          <div class="prayer-counter-card">
+            <div class="prayer-name">Isha (4 Rakat)</div>
+            <div class="prayer-count" id="countIsha">0</div>
+          </div>
+          <div class="prayer-counter-card" id="cardWitr" style="display:none;">
+            <div class="prayer-name">Witr (3 Rakat)</div>
+            <div class="prayer-count" id="countWitr">0</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RELIGIOUS DISCLAIMER -->
+      <aside class="religious-disclaimer-box" role="note">
+        <svg class="disclaimer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <div class="disclaimer-text">
+          <strong>Religious Disclaimer:</strong> This calculator provides an estimate based on the information you enter. Rules regarding when Salah becomes obligatory, missed Salah, menstruation, and Qaza can differ according to scholarly opinions and schools of thought. Please consult a qualified scholar if you need guidance for your specific situation.
+        </div>
+      </aside>
+
+    </div>
+
+  </div> <!-- /.app-container -->
+
+  <!-- ====================================================================
+       ADJUST MY CALCULATION DRAWER (Instant Recalculation)
+       ==================================================================== -->
+  <div id="adjustDrawerBackdrop" class="drawer-backdrop">
+    <div class="drawer-panel" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+      <div class="drawer-header">
+        <h3 id="drawerTitle" class="drawer-title">Adjust My Calculation</h3>
+        <button id="btnCloseAdjustDrawer" class="btn-drawer-close" aria-label="Close Drawer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="drawer-body">
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+          Tweak any parameter below to immediately recalculate your Lifetime Missed Salah and Remaining Qaza in real-time.
+        </p>
+
+        <!-- Date of Birth Adjustment -->
+        <div class="form-group">
+          <label class="form-label">Date of Birth:</label>
+          <div class="dob-inputs-grid">
+            <div class="dob-col">
+              <label for="adjDobDay">Day</label>
+              <input type="number" id="adjDobDay" class="input-field" min="1" max="31" value="15">
+            </div>
+            <div class="dob-col">
+              <label for="adjDobMonth">Month</label>
+              <select id="adjDobMonth" class="input-field">
+                <option value="1">1 - Jan</option>
+                <option value="2">2 - Feb</option>
+                <option value="3">3 - Mar</option>
+                <option value="4">4 - Apr</option>
+                <option value="5">5 - May</option>
+                <option value="6">6 - Jun</option>
+                <option value="7">7 - Jul</option>
+                <option value="8">8 - Aug</option>
+                <option value="9">9 - Sep</option>
+                <option value="10">10 - Oct</option>
+                <option value="11">11 - Nov</option>
+                <option value="12">12 - Dec</option>
+              </select>
+            </div>
+            <div class="dob-col">
+              <label for="adjDobYear">Year</label>
+              <input type="number" id="adjDobYear" class="input-field" min="1920" max="2026" value="1998">
+            </div>
+          </div>
+        </div>
+
+        <!-- Mandatory Age -->
+        <div class="form-group">
+          <label class="form-label" for="adjMandatoryAge">Mandatory Age: <span id="adjDisplayMandatoryAge" style="color:var(--accent-gold-light); font-weight:700;">14</span> yrs</label>
+          <input type="range" id="adjMandatoryAge" class="range-slider" min="9" max="18" step="0.5" value="14">
+        </div>
+
+        <!-- Regular Prayer Duration -->
+        <div class="form-group">
+          <label class="form-label">Regular Prayer Duration (5/5 Prayed):</label>
+          <div class="duration-inputs-row">
+            <div class="duration-col">
+              <label for="adjRegYears">Years</label>
+              <input type="number" id="adjRegYears" class="input-field" min="0" value="0">
+            </div>
+            <div class="duration-col">
+              <label for="adjRegMonths">Months</label>
+              <input type="number" id="adjRegMonths" class="input-field" min="0" max="11" value="0">
+            </div>
+            <div class="duration-col">
+              <label for="adjRegDays">Days</label>
+              <input type="number" id="adjRegDays" class="input-field" min="0" max="31" value="0">
+            </div>
+          </div>
+        </div>
+
+        <!-- Partial Prayer Duration -->
+        <div class="form-group">
+          <label class="form-label">Partial Prayer Duration:</label>
+          <div class="duration-inputs-row">
+            <div class="duration-col">
+              <label for="adjPartYears">Years</label>
+              <input type="number" id="adjPartYears" class="input-field" min="0" value="0">
+            </div>
+            <div class="duration-col">
+              <label for="adjPartMonths">Months</label>
+              <input type="number" id="adjPartMonths" class="input-field" min="0" max="11" value="0">
+            </div>
+            <div class="duration-col">
+              <label for="adjPartDays">Days</label>
+              <input type="number" id="adjPartDays" class="input-field" min="0" max="31" value="0">
+            </div>
+          </div>
+        </div>
+
+        <!-- Missed per day during partial -->
+        <div class="form-group">
+          <label class="form-label">Missed Prayers / Day During Partial Period:</label>
+          <div class="chip-grid" id="adjChipGridMissed">
+            <button type="button" class="chip-btn" data-adj-missed="1">1</button>
+            <button type="button" class="chip-btn" data-adj-missed="2">2</button>
+            <button type="button" class="chip-btn" data-adj-missed="3">3</button>
+            <button type="button" class="chip-btn" data-adj-missed="4">4</button>
+          </div>
+        </div>
+
+        <!-- Qaza already prayed -->
+        <div class="form-group">
+          <label class="form-label" for="adjQazaPrayed">Qaza Already Prayed:</label>
+          <input type="number" id="adjQazaPrayed" class="input-field" min="0" value="0">
+        </div>
+
+        <!-- Menstruation days (Female only) -->
+        <div class="form-group" id="adjGroupMenstruation" style="display:none;">
+          <label class="form-label">Average Menstruation Days / Month:</label>
+          <div class="chip-grid" id="adjChipGridMenstruation">
+            <button type="button" class="chip-btn" data-adj-days="2">2</button>
+            <button type="button" class="chip-btn" data-adj-days="3">3</button>
+            <button type="button" class="chip-btn" data-adj-days="4">4</button>
+            <button type="button" class="chip-btn" data-adj-days="5">5</button>
+            <button type="button" class="chip-btn" data-adj-days="6">6</button>
+            <button type="button" class="chip-btn" data-adj-days="7">7</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer-footer">
+        <button id="btnApplyAdjust" class="btn-wizard btn-calculate" style="width: 100%;">
+          Close & View Results
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastNotice" class="toast-notice" role="status" aria-live="polite">Summary copied to clipboard!</div>
+
+  <!-- Scripts -->
+  <script src="js/calculator.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

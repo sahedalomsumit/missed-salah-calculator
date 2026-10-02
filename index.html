@@ -3,10 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lifetime Missed Salah & Qaza Calculator | Accurate Islamic Calculation</title>
+  <title>Lifetime Missed Salah & Qaza Calculator | Sahed Alom Sumit</title>
   <meta name="description" content="Calculate your lifetime missed Salah and remaining Qaza prayers transparently based on your regular, partial, and no-prayer periods, with accurate calendar calculations and menstruation deductions.">
   <meta name="keywords" content="missed salah calculator, qaza namaz calculator, qada salah, islamic prayer tracker, prayer debt calculation">
   <meta name="theme-color" content="#03140f">
+
+  <!-- Favicon & App Icons -->
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="alternate icon" href="assets/favicon.svg">
+  <link rel="apple-touch-icon" href="assets/logo.svg">
 
   <!-- Google Fonts: Outfit, Plus Jakarta Sans, Amiri -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,44 +28,26 @@
     <header class="app-header">
       <div class="bismillah" aria-label="Bismillahir Rahmanir Raheem">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
       <div class="app-brand">
-        <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"></circle>
-          <path d="M12 6v6l4 2"></path>
-          <path d="m16.2 7.8 2-2"></path>
-        </svg>
+        <img src="assets/logo.svg" alt="Lifetime Missed Salah Calculator Logo" class="brand-logo" width="44" height="44" />
         <h1 class="app-title">Lifetime Missed Salah Calculator</h1>
       </div>
       <p class="app-subtitle">Transparent, calendar-accurate estimation of your missed obligatory prayers and remaining Qaza.</p>
       
       <div class="header-actions">
-        <button id="btnSoundToggle" class="btn-icon-toggle" aria-label="Toggle Sound Effects" title="Toggle audio feedback">
-          <svg id="iconSoundOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+        <!-- Companion Mobile App Button -->
+        <a href="https://play.google.com/store/apps/details?id=com.sahed.salah_tracker" 
+           target="_blank" 
+           rel="noopener noreferrer" 
+           class="btn-companion-header" 
+           title="Track Salah & Qaza in real-time with Salah Tracker on Android">
+          <svg class="play-icon" viewBox="0 0 24 24" width="16" height="16">
+            <path d="M3.609 1.814L13.792 12 3.61 22.186a2.023 2.023 0 0 1-.22-.924V2.738c0-.34.08-.655.22-.924z" fill="#00E676"/>
+            <path d="M17.432 8.36L5.053 1.282A2.08 2.08 0 0 0 3.61 1.814L13.792 12l3.64-3.64z" fill="#00B0FF"/>
+            <path d="M17.432 15.64l-3.64-3.64L3.61 22.186c.433.25.96.25 1.443-.026l12.38-7.08a1.99 1.99 0 0 0 0-.44z" fill="#FF3D00"/>
+            <path d="M21.282 10.562l-3.85-2.202-3.64 3.64 3.64 3.64 3.85-2.202c.866-.495.866-1.383 0-1.878z" fill="#FFC107"/>
           </svg>
-          <svg id="iconSoundOff" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-            <line x1="23" y1="9" x2="17" y2="15"></line>
-            <line x1="17" y1="9" x2="23" y2="15"></line>
-          </svg>
-        </button>
-        <button id="btnThemeToggle" class="btn-icon-toggle" aria-label="Toggle Theme" title="Toggle Light/Dark Theme">
-          <svg id="iconThemeDark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-          </svg>
-          <svg id="iconThemeLight" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-          </svg>
-        </button>
+          <span>Salah Tracker App</span>
+        </a>
       </div>
     </header>
 
@@ -661,6 +648,100 @@
         </div>
       </section>
 
+      <!-- COMPANION APP SHOWCASE: SALAH TRACKER -->
+      <section class="companion-app-card" aria-label="Salah Tracker Mobile Companion App">
+        <div class="companion-app-content">
+          <div class="companion-badge-pill">
+            <span class="pulse-indicator"></span> Real-Time Salah &amp; Qaza Tracking
+          </div>
+          <h3 class="companion-title">Track Your Daily Prayers &amp; Real-Time Qaza on Mobile</h3>
+          <p class="companion-desc">
+            Keep your spiritual momentum alive. Log your five daily obligatory prayers in real time, subtract make-up prayers one by one with a single tap, and maintain prayer streaks on your phone.
+          </p>
+
+          <div class="companion-features-grid">
+            <div class="companion-feature">
+              <div class="feat-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              </div>
+              <div>
+                <strong>Real-Time Salah Tracking</strong>
+                <span>Check off Fajr, Dhuhr, Asr, Maghrib &amp; Isha on time throughout the day.</span>
+              </div>
+            </div>
+
+            <div class="companion-feature">
+              <div class="feat-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="1" x2="12" y2="23"></line>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+              </div>
+              <div>
+                <strong>Interactive Qaza Counter</strong>
+                <span>Watch your prayer debt count down in real-time as you pray make-ups.</span>
+              </div>
+            </div>
+
+            <div class="companion-feature">
+              <div class="feat-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                </svg>
+              </div>
+              <div>
+                <strong>Streaks &amp; Motivation</strong>
+                <span>Build lasting prayer consistency with daily streaks and milestone celebrations.</span>
+              </div>
+            </div>
+
+            <div class="companion-feature">
+              <div class="feat-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+              </div>
+              <div>
+                <strong>Timely Reminders</strong>
+                <span>Never forget your obligatory or Qaza prayers with smart notifications.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="companion-cta-row">
+            <a href="https://play.google.com/store/apps/details?id=com.sahed.salah_tracker" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="google-play-btn"
+               title="Download Salah Tracker on Google Play Store">
+              <svg class="google-play-svg" viewBox="0 0 24 24" width="24" height="24">
+                <path d="M3.609 1.814L13.792 12 3.61 22.186a2.023 2.023 0 0 1-.22-.924V2.738c0-.34.08-.655.22-.924z" fill="#00E676"/>
+                <path d="M17.432 8.36L5.053 1.282A2.08 2.08 0 0 0 3.61 1.814L13.792 12l3.64-3.64z" fill="#00B0FF"/>
+                <path d="M17.432 15.64l-3.64-3.64L3.61 22.186c.433.25.96.25 1.443-.026l12.38-7.08a1.99 1.99 0 0 0 0-.44z" fill="#FF3D00"/>
+                <path d="M21.282 10.562l-3.85-2.202-3.64 3.64 3.64 3.64 3.85-2.202c.866-.495.866-1.383 0-1.878z" fill="#FFC107"/>
+              </svg>
+              <div class="play-btn-text">
+                <span class="play-small">GET IT ON</span>
+                <span class="play-large">Google Play</span>
+              </div>
+            </a>
+            
+            <div class="app-rating-pill">
+              <span class="rating-stars">★★★★★</span>
+              <span class="rating-text">Free on Android • Real-time Data</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="companion-app-preview">
+          <img src="assets/salah-tracker-mockup.jpg" alt="Salah Tracker Android App displaying daily checklist and real-time Qaza tracking progress" loading="lazy" class="mockup-img" width="360" height="202" />
+        </div>
+      </section>
+
       <!-- RELIGIOUS DISCLAIMER -->
       <aside class="religious-disclaimer-box" role="note">
         <svg class="disclaimer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -674,6 +755,27 @@
       </aside>
 
     </div>
+
+    <!-- App Main Footer -->
+    <footer class="app-main-footer">
+      <div class="footer-inner">
+        <div class="footer-brand-col">
+          <div class="footer-brand">
+            <img src="assets/logo.svg" alt="Logo" class="footer-logo" width="24" height="24" />
+            <span>Lifetime Missed Salah Calculator</span>
+          </div>
+          <p class="footer-tagline">Accurate, calendar-based Islamic prayer debt calculation &amp; Qaza roadmap planning.</p>
+        </div>
+        <div class="footer-links-col">
+          <a href="https://play.google.com/store/apps/details?id=com.sahed.salah_tracker" target="_blank" rel="noopener noreferrer" class="footer-link">
+            📱 Salah Tracker App (Android)
+          </a>
+          <a href="https://sahedalomsumit.com/" target="_blank" rel="noopener noreferrer" class="footer-link">
+            🌐 Developer Portfolio
+          </a>
+        </div>
+      </div>
+    </footer>
 
   </div> <!-- /.app-container -->
 
@@ -811,6 +913,54 @@
 
   <!-- Toast Notification -->
   <div id="toastNotice" class="toast-notice" role="status" aria-live="polite">Summary copied to clipboard!</div>
+
+  <!-- Sticky Right Bottom Footer Credit -->
+  <aside class="sticky-footer-credit" id="stickyCredit" aria-label="Developer Credit">
+    <a
+      href="https://sahedalomsumit.com/"
+      target="_blank"
+      rel="noopener noreferrer"
+      style="text-decoration: none"
+    >
+      <div
+        style="
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 0.875rem;
+          color: #aaaaaa;
+          font-weight: 500;
+          cursor: pointer;
+          transition: background-color 0.25s ease, color 0.25s ease;
+        "
+      >
+        <span>Built with</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="#ef4444"
+          stroke="#ef4444"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          style="
+            transform-origin: center;
+            flex-shrink: 0;
+            animation: pulseHeart 1.2s infinite ease-in-out;
+          "
+          aria-hidden="true"
+        >
+          <path
+            d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+          ></path>
+        </svg>
+        <span>by</span>
+        <span style="color: #ff8719 ; font-weight: 700">Sahed</span>
+      </div>
+    </a>
+  </aside>
 
   <!-- Scripts -->
   <script src="js/calculator.js"></script>

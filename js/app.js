@@ -7,46 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const calc = window.SalahCalculator;
 
   // -------------------------------------------------------------------------
-  // Sound Synthesis (Web Audio API - 100% offline, zero assets)
-  // -------------------------------------------------------------------------
-  let audioCtx = null;
-  let soundEnabled = true;
-
-  function initAudio() {
-    if (!audioCtx && (window.AudioContext || window.webkitAudioContext)) {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-  }
-
-  function playSoftChime(frequency = 520, duration = 0.15) {
-    if (!soundEnabled) return;
-    try {
-      initAudio();
-      if (!audioCtx) return;
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(frequency * 1.5, audioCtx.currentTime + duration);
-
-      gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-
-      osc.start();
-      osc.stop(audioCtx.currentTime + duration);
-    } catch (e) {
-      // Audio autoplay restrictions gracefully handled
-    }
-  }
-
-  // -------------------------------------------------------------------------
   // State
   // -------------------------------------------------------------------------
   const state = {
@@ -200,14 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const adjGroupMenstruation = document.getElementById('adjGroupMenstruation');
   const adjChipGridMenstruation = document.getElementById('adjChipGridMenstruation');
 
-  // Header Toggles
-  const btnSoundToggle = document.getElementById('btnSoundToggle');
-  const iconSoundOn = document.getElementById('iconSoundOn');
-  const iconSoundOff = document.getElementById('iconSoundOff');
-  const btnThemeToggle = document.getElementById('btnThemeToggle');
-  const iconThemeDark = document.getElementById('iconThemeDark');
-  const iconThemeLight = document.getElementById('iconThemeLight');
-
   // -------------------------------------------------------------------------
   // Step Definitions & Names
   // -------------------------------------------------------------------------
@@ -275,7 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
       dot.textContent = i;
       dot.title = `Step ${i}: ${stepTitles[state.gender][i - 1]}`;
       dot.addEventListener('click', () => {
-        playSoftChime(480, 0.1);
         goToStep(i);
       });
       stepperDotsContainer.appendChild(dot);
@@ -420,7 +371,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function setGender(gender) {
     state.gender = gender;
-    playSoftChime(540, 0.12);
 
     if (gender === 'male') {
       choiceMale.classList.add('selected');
@@ -455,7 +405,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Global Presets for window bindings
   window.setPresetDOB = function (ageYears) {
-    playSoftChime(500, 0.1);
     const targetDate = new Date();
     const birthYear = targetDate.getFullYear() - ageYears;
     if (dobYear) dobYear.value = birthYear;
@@ -465,7 +414,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.setMandatoryAge = function (age) {
-    playSoftChime(520, 0.1);
     sliderMandatoryAge.value = age;
     state.mandatoryAge = age;
     displayMandatoryAge.textContent = `${age} years`;
@@ -473,14 +421,12 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.setRegularPreset = function (y, m, d) {
-    playSoftChime(520, 0.1);
     regYears.value = y;
     regMonths.value = m;
     regDays.value = d;
   };
 
   window.setRegularPresetAll = function () {
-    playSoftChime(600, 0.15);
     try {
       const dob = new Date(inputDOB.value + 'T00:00:00');
       const start = calc.calculateSalahStartDate(dob, parseFloat(sliderMandatoryAge.value) || 14);
@@ -494,18 +440,15 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.addQaza = function (amount) {
-    playSoftChime(560, 0.1);
     const curr = parseInt(inputQazaDone.value, 10) || 0;
     inputQazaDone.value = curr + amount;
   };
 
   window.setQaza = function (amount) {
-    playSoftChime(480, 0.1);
     inputQazaDone.value = amount;
   };
 
   window.setPlannerPace = function (pace) {
-    playSoftChime(540, 0.1);
     state.plannerPace = pace;
     document.querySelectorAll('.pace-card').forEach(card => {
       card.classList.toggle('active', parseInt(card.dataset.pace, 10) === pace);
@@ -570,7 +513,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Chip Grid for Missed Salah per day (Step 5)
   chipGridMissed.querySelectorAll('.chip-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      playSoftChime(520, 0.1);
       chipGridMissed.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       state.partialMissedPerDay = parseInt(btn.dataset.missed, 10);
@@ -580,7 +522,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Chip Grid for Menstruation days (Step 7)
   chipGridMenstruation.querySelectorAll('.chip-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      playSoftChime(520, 0.1);
       chipGridMenstruation.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       state.avgMenstruationDays = parseInt(btn.dataset.days, 10);
@@ -589,7 +530,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Navigation Prev / Next
   btnPrevStep.addEventListener('click', () => {
-    playSoftChime(460, 0.1);
     goToStep(state.currentStep - 1);
   });
 
@@ -598,7 +538,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (state.currentStep === 2) {
       const parsed = getParsedDOB(dobDay, dobMonth, dobYear);
       if (!parsed) {
-        playSoftChime(320, 0.2);
         calculatedAgeNote.textContent = '⚠️ Please enter a valid 4-digit birth year (e.g. 1995) to continue.';
         calculatedAgeNote.style.color = '#f87171';
         if (dobYear) dobYear.focus();
@@ -608,11 +547,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const total = getTotalSteps();
     if (state.currentStep < total) {
-      playSoftChime(560, 0.1);
       goToStep(state.currentStep + 1);
     } else {
       // Last Step -> Run Calculation & Show Dashboard!
-      playSoftChime(680, 0.25);
       runCalculationAndDisplay();
     }
   });
@@ -744,7 +681,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Toggle Audit Accordion
   btnToggleAudit.addEventListener('click', () => {
-    playSoftChime(500, 0.1);
     const isOpen = auditContent.classList.contains('open');
     if (isOpen) {
       auditContent.classList.remove('open');
@@ -802,7 +738,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   chkIncludeWitr.addEventListener('change', () => {
-    playSoftChime(520, 0.1);
     updatePlannerUI();
   });
 
@@ -899,13 +834,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   btnOpenAdjustDrawer.addEventListener('click', () => {
-    playSoftChime(500, 0.1);
     populateDrawerInputs();
     adjustDrawerBackdrop.classList.add('open');
   });
 
   function closeDrawer() {
-    playSoftChime(450, 0.1);
     adjustDrawerBackdrop.classList.remove('open');
   }
 
@@ -934,7 +867,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   adjChipGridMissed.querySelectorAll('.chip-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      playSoftChime(520, 0.1);
       adjChipGridMissed.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       state.partialMissedPerDay = parseInt(btn.dataset.adjMissed, 10);
@@ -944,7 +876,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   adjChipGridMenstruation.querySelectorAll('.chip-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      playSoftChime(520, 0.1);
       adjChipGridMenstruation.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       state.avgMenstruationDays = parseInt(btn.dataset.adjDays, 10);
@@ -956,7 +887,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Restart / Reset Wizard
   // -------------------------------------------------------------------------
   btnRestartWizard.addEventListener('click', () => {
-    playSoftChime(480, 0.1);
     resultsDashboard.classList.remove('active');
     stepperNav.style.display = 'block';
     wizardCard.style.display = 'block';
@@ -967,7 +897,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Copy Summary to Clipboard
   // -------------------------------------------------------------------------
   btnCopySummary.addEventListener('click', async () => {
-    playSoftChime(620, 0.15);
     if (!state.calculationResult) return;
     const res = state.calculationResult;
     const namePart = res.name ? `Name: ${res.name}\n` : '';
@@ -1017,24 +946,7 @@ Generated with Lifetime Missed Salah Calculator`;
 
   // Print Report
   btnPrintReport.addEventListener('click', () => {
-    playSoftChime(500, 0.1);
     window.print();
-  });
-
-  // Sound Toggle
-  btnSoundToggle.addEventListener('click', () => {
-    soundEnabled = !soundEnabled;
-    iconSoundOn.style.display = soundEnabled ? 'block' : 'none';
-    iconSoundOff.style.display = soundEnabled ? 'none' : 'block';
-    if (soundEnabled) playSoftChime(600, 0.1);
-  });
-
-  // Theme Toggle (Dark / Light)
-  btnThemeToggle.addEventListener('click', () => {
-    playSoftChime(520, 0.1);
-    const isLight = document.body.classList.toggle('light-theme');
-    iconThemeDark.style.display = isLight ? 'none' : 'block';
-    iconThemeLight.style.display = isLight ? 'block' : 'none';
   });
 
   // -------------------------------------------------------------------------
@@ -1043,3 +955,4 @@ Generated with Lifetime Missed Salah Calculator`;
   updateDatePreviews();
   updateStepperUI();
 });
+

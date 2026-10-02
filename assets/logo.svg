@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" fill="none">
+  <defs>
+    <!-- Deep Islamic Emerald Radial -->
+    <radialGradient id="logoBgGrad" cx="50%" cy="45%" r="55%" fx="40%" fy="35%">
+      <stop offset="0%" stop-color="#0a3c2e" />
+      <stop offset="65%" stop-color="#042018" />
+      <stop offset="100%" stop-color="#02110c" />
+    </radialGradient>
+
+    <!-- Radiant Islamic Gold Gradient -->
+    <linearGradient id="logoGold" x1="15%" y1="10%" x2="85%" y2="90%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="35%" stop-color="#f59e0b" />
+      <stop offset="70%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+
+    <!-- Shimmering Bright Gold -->
+    <linearGradient id="goldShine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="40%" stop-color="#fef3c7" />
+      <stop offset="100%" stop-color="#fbbf24" />
+    </linearGradient>
+
+    <!-- Emerald Glow -->
+    <filter id="emeraldGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <!-- Gold Glow -->
+    <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2.5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Outer Ambient Glow Circle -->
+  <circle cx="60" cy="60" r="56" fill="url(#logoBgGrad)" stroke="url(#logoGold)" stroke-width="2.5" />
+
+  <!-- Sacred Geometry Outer Ring -->
+  <circle cx="60" cy="60" r="51.5" stroke="#10b981" stroke-width="1" stroke-dasharray="3 3.5" opacity="0.65" />
+  <circle cx="60" cy="60" r="48" stroke="url(#logoGold)" stroke-width="0.75" opacity="0.4" />
+
+  <!-- 12 Compass / Calculation Orbit Dots (representing months & prayer cycles) -->
+  <g fill="url(#logoGold)" opacity="0.75">
+    <circle cx="60" cy="9.5" r="1.5" />
+    <circle cx="85.25" cy="16.25" r="1.3" />
+    <circle cx="103.75" cy="34.75" r="1.3" />
+    <circle cx="110.5" cy="60" r="1.5" />
+    <circle cx="103.75" cy="85.25" r="1.3" />
+    <circle cx="85.25" cy="103.75" r="1.3" />
+    <circle cx="60" cy="110.5" r="1.5" />
+    <circle cx="34.75" cy="103.75" r="1.3" />
+    <circle cx="16.25" cy="85.25" r="1.3" />
+    <circle cx="9.5" cy="60" r="1.5" />
+    <circle cx="16.25" cy="34.75" r="1.3" />
+    <circle cx="34.75" cy="16.25" r="1.3" />
+  </g>
+
+  <!-- Golden Crescent Moon -->
+  <path d="M68 24C49 26.5 35 41 35 60.5C35 80 49.5 94.5 69 95.5C59 90.5 52 80 52 68C52 50.5 63 36 68 24Z" 
+        fill="url(#logoGold)" filter="url(#goldGlow)" />
+
+  <!-- Inner Crescent Highlight -->
+  <path d="M66 27C50.5 30 38.5 43.5 38.5 60.5C38.5 73.5 46.5 84 57 89C54.5 82 54 75 54 68C54 52 62.5 38.5 66 27Z" 
+        fill="#fef08a" opacity="0.3" />
+
+  <!-- Mosque Silhouette: Base, Portico Arches, Dome, Minaret -->
+  <!-- Foundation Plinth -->
+  <path d="M53 84H88V80H53V84Z" fill="url(#logoGold)" />
+  <rect x="55" y="74" width="31" height="6" fill="url(#logoGold)" />
+  <!-- Small arched openings in base -->
+  <path d="M60 80V76.5C60 75.5 61 75 62 75C63 75 64 75.5 64 76.5V80H60Z" fill="#042018" />
+  <path d="M68 80V76.5C68 75.5 69 75 70 75C71 75 72 75.5 72 76.5V80H68Z" fill="#042018" />
+  <path d="M76 80V76.5C76 75.5 77 75 78 75C79 75 80 75.5 80 76.5V80H76Z" fill="#042018" />
+
+  <!-- Main Mosque Dome (pointed Islamic horseshoe arch) -->
+  <path d="M57 74C57 58 70.5 49 70.5 49C70.5 49 84 58 84 74H57Z" 
+        fill="url(#logoGold)" />
+  <!-- Dome center light reflection -->
+  <path d="M62 74C62 61 70.5 53 70.5 53C70.5 53 73 57 73 74H62Z" 
+        fill="url(#goldShine)" opacity="0.35" />
+
+  <!-- Dome Spire with Crescent Finial -->
+  <line x1="70.5" y1="49" x2="70.5" y2="42" stroke="url(#logoGold)" stroke-width="2.5" stroke-linecap="round" />
+  <path d="M72.5 40C72.5 41.5 71 42.5 69.5 42C71.5 41 71.5 39 69.5 38C71.5 38 72.5 39 72.5 40Z" fill="url(#goldShine)" />
+
+  <!-- Minaret on the right -->
+  <rect x="86.5" y="58" width="5.5" height="26" rx="1" fill="url(#logoGold)" />
+  <rect x="85.5" y="65" width="7.5" height="2.5" rx="0.5" fill="url(#goldShine)" />
+  <rect x="85.5" y="56" width="7.5" height="2.5" rx="0.5" fill="url(#goldShine)" />
+  <path d="M86.5 56L89.25 47L92 56H86.5Z" fill="url(#logoGold)" />
+  <line x1="89.25" y1="47" x2="89.25" y2="43" stroke="url(#logoGold)" stroke-width="1.8" stroke-linecap="round" />
+  <circle cx="89.25" cy="42" r="1.2" fill="url(#goldShine)" />
+
+  <!-- 5 Obligatory Prayer Stars (Fajr, Dhuhr, Asr, Maghrib, Isha) -->
+  <!-- Fajr -->
+  <g transform="translate(38, 43)">
+    <polygon points="0,-4 1.2,-1.2 4,0 1.2,1.2 0,4 -1.2,1.2 -4,0 -1.2,-1.2" fill="url(#goldShine)" filter="url(#goldGlow)" />
+  </g>
+  <!-- Dhuhr -->
+  <g transform="translate(48, 31)">
+    <polygon points="0,-4.5 1.4,-1.4 4.5,0 1.4,1.4 0,4.5 -1.4,1.4 -4.5,0 -1.4,-1.4" fill="url(#goldShine)" filter="url(#goldGlow)" />
+  </g>
+  <!-- Asr (Central Zenith) -->
+  <g transform="translate(63, 24)">
+    <polygon points="0,-5.5 1.7,-1.7 5.5,0 1.7,1.7 0,5.5 -1.7,1.7 -5.5,0 -1.7,-1.7" fill="url(#goldShine)" filter="url(#goldGlow)" />
+  </g>
+  <!-- Maghrib -->
+  <g transform="translate(79, 29)">
+    <polygon points="0,-4.5 1.4,-1.4 4.5,0 1.4,1.4 0,4.5 -1.4,1.4 -4.5,0 -1.4,-1.4" fill="url(#goldShine)" filter="url(#goldGlow)" />
+  </g>
+  <!-- Isha -->
+  <g transform="translate(92, 38)">
+    <polygon points="0,-4 1.2,-1.2 4,0 1.2,1.2 0,4 -1.2,1.2 -4,0 -1.2,-1.2" fill="url(#goldShine)" filter="url(#goldGlow)" />
+  </g>
+</svg>

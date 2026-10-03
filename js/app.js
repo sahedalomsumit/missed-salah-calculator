@@ -26,6 +26,136 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // -------------------------------------------------------------------------
+  // LocalStorage Cache Key & Persistence
+  // -------------------------------------------------------------------------
+  const STORAGE_KEY = 'missed_salah_calculator_state';
+
+  function saveStateToLocalStorage() {
+    try {
+      const isDashboardActive = resultsDashboard ? resultsDashboard.classList.contains('active') : false;
+      const dataToSave = {
+        name: inputName ? inputName.value.trim() : state.name,
+        gender: state.gender,
+        dobDay: dobDay ? dobDay.value : '15',
+        dobMonth: dobMonth ? dobMonth.value : '5',
+        dobYear: dobYear ? dobYear.value : '1998',
+        dob: state.dob,
+        mandatoryAge: state.mandatoryAge,
+        regYears: regYears ? regYears.value : '0',
+        regMonths: regMonths ? regMonths.value : '0',
+        regDays: regDays ? regDays.value : '0',
+        partYears: partYears ? partYears.value : '0',
+        partMonths: partMonths ? partMonths.value : '0',
+        partDays: partDays ? partDays.value : '0',
+        partialMissedPerDay: state.partialMissedPerDay,
+        qazaAlreadyPrayed: inputQazaDone ? inputQazaDone.value : '0',
+        avgMenstruationDays: state.avgMenstruationDays,
+        plannerPace: state.plannerPace,
+        includeWitr: chkIncludeWitr ? chkIncludeWitr.checked : false,
+        currentStep: state.currentStep,
+        isDashboardActive: isDashboardActive
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+    } catch (e) {
+      console.warn('Failed to save state to localStorage:', e);
+    }
+  }
+
+  function loadStateFromLocalStorage() {
+    try {
+      const rawData = localStorage.getItem(STORAGE_KEY);
+      if (!rawData) return false;
+      const data = JSON.parse(rawData);
+      if (!data || typeof data !== 'object') return false;
+
+      if (data.gender) {
+        setGender(data.gender);
+      }
+      if (data.name !== undefined && inputName) {
+        inputName.value = data.name;
+        state.name = data.name;
+      }
+      if (data.dobDay && dobDay) dobDay.value = data.dobDay;
+      if (data.dobMonth && dobMonth) dobMonth.value = data.dobMonth;
+      if (data.dobYear && dobYear) dobYear.value = data.dobYear;
+
+      if (data.mandatoryAge !== undefined && sliderMandatoryAge) {
+        sliderMandatoryAge.value = data.mandatoryAge;
+        state.mandatoryAge = parseFloat(data.mandatoryAge);
+        if (displayMandatoryAge) displayMandatoryAge.textContent = `${state.mandatoryAge} years`;
+      }
+
+      if (data.regYears !== undefined && regYears) regYears.value = data.regYears;
+      if (data.regMonths !== undefined && regMonths) regMonths.value = data.regMonths;
+      if (data.regDays !== undefined && regDays) regDays.value = data.regDays;
+
+      if (data.partYears !== undefined && partYears) partYears.value = data.partYears;
+      if (data.partMonths !== undefined && partMonths) partMonths.value = data.partMonths;
+      if (data.partDays !== undefined && partDays) partDays.value = data.partDays;
+
+      if (data.partialMissedPerDay !== undefined) {
+        state.partialMissedPerDay = parseInt(data.partialMissedPerDay, 10) || 3;
+        if (chipGridMissed) {
+          chipGridMissed.querySelectorAll('.chip-btn').forEach(btn => {
+            btn.classList.toggle('active', parseInt(btn.dataset.missed, 10) === state.partialMissedPerDay);
+          });
+        }
+      }
+
+      if (data.qazaAlreadyPrayed !== undefined && inputQazaDone) {
+        inputQazaDone.value = data.qazaAlreadyPrayed;
+        state.qazaAlreadyPrayed = parseInt(data.qazaAlreadyPrayed, 10) || 0;
+      }
+
+      if (data.avgMenstruationDays !== undefined) {
+        state.avgMenstruationDays = parseInt(data.avgMenstruationDays, 10) || 5;
+        if (chipGridMenstruation) {
+          chipGridMenstruation.querySelectorAll('.chip-btn').forEach(btn => {
+            btn.classList.toggle('active', parseInt(btn.dataset.days, 10) === state.avgMenstruationDays);
+          });
+        }
+      }
+
+      if (data.plannerPace !== undefined) {
+        state.plannerPace = parseInt(data.plannerPace, 10) || 5;
+        document.querySelectorAll('.pace-card').forEach(card => {
+          card.classList.toggle('active', parseInt(card.dataset.pace, 10) === state.plannerPace);
+        });
+      }
+
+      if (data.includeWitr !== undefined && chkIncludeWitr) {
+        chkIncludeWitr.checked = !!data.includeWitr;
+        state.includeWitr = !!data.includeWitr;
+      }
+
+      updateDatePreviews();
+
+      if (data.isDashboardActive) {
+        runCalculationAndDisplay();
+      } else if (data.currentStep) {
+        const targetStep = Math.min(Math.max(1, parseInt(data.currentStep, 10)), getTotalSteps());
+        goToStep(targetStep);
+      }
+      return true;
+    } catch (e) {
+      console.warn('Failed to load state from localStorage:', e);
+      return false;
+    }
+  }
+
+  window.clearSavedData = function () {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      showToast('Saved data cleared!');
+      setTimeout(() => {
+        window.location.reload();
+      }, 400);
+    } catch (e) {
+      console.warn('Failed to clear localStorage:', e);
+    }
+  };
+
+  // -------------------------------------------------------------------------
   // DOM Elements
   // -------------------------------------------------------------------------
   // Stepper
@@ -143,6 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnCloseAdjustDrawer = document.getElementById('btnCloseAdjustDrawer');
   const btnApplyAdjust = document.getElementById('btnApplyAdjust');
 
+  const adjName = document.getElementById('adjName');
   const adjDobDay = document.getElementById('adjDobDay');
   const adjDobMonth = document.getElementById('adjDobMonth');
   const adjDobYear = document.getElementById('adjDobYear');
@@ -165,7 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // -------------------------------------------------------------------------
   const stepTitles = {
     male: [
-      'Your Gender',
+      'First Name & Gender',
       'Date of Birth',
       'Age Salah Became Mandatory',
       'Regular Prayer Period',
@@ -173,7 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
       'Qaza Already Prayed'
     ],
     female: [
-      'Your Gender',
+      'First Name & Gender',
       'Date of Birth',
       'Age Salah Became Mandatory',
       'Regular Prayer Period',
@@ -264,9 +395,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function validateStep1() {
+    const val = inputName ? inputName.value.trim() : '';
+    const errorMsg = document.getElementById('nameErrorMsg');
+    if (!val) {
+      if (inputName) {
+        inputName.classList.add('input-error');
+        inputName.focus();
+      }
+      if (errorMsg) errorMsg.style.display = 'flex';
+      return false;
+    }
+    if (inputName) inputName.classList.remove('input-error');
+    if (errorMsg) errorMsg.style.display = 'none';
+    state.name = val;
+    return true;
+  }
+
   function goToStep(stepIndex) {
     const total = getTotalSteps();
     if (stepIndex < 1 || stepIndex > total) return;
+
+    // Disallow advancing past Step 1 without entering mandatory first name
+    if (state.currentStep === 1 && stepIndex > 1) {
+      if (!validateStep1()) return;
+    }
+
+    // Disallow advancing past Step 2 without entering valid date of birth
+    if (state.currentStep === 2 && stepIndex > 2) {
+      const parsed = getParsedDOB(dobDay, dobMonth, dobYear);
+      if (!parsed) {
+        calculatedAgeNote.textContent = '⚠️ Please enter a valid 4-digit birth year (e.g. 1995) to continue.';
+        calculatedAgeNote.style.color = '#f87171';
+        if (dobYear) dobYear.focus();
+        return;
+      }
+    }
 
     state.currentStep = stepIndex;
 
@@ -282,6 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     updateStepperUI();
+    saveStateToLocalStorage();
     wizardCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
@@ -367,6 +532,8 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       salahStartDateNotice.innerHTML = `<span style="color:#f87171;">⚠️ Salah start date would be in the future (${startDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}). Please check your birth year or mandatory age.</span>`;
     }
+
+    saveStateToLocalStorage();
   }
 
   function setGender(gender) {
@@ -401,6 +568,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateDatePreviews();
     updateStepperUI();
+    saveStateToLocalStorage();
   }
 
   // Global Presets for window bindings
@@ -424,6 +592,7 @@ document.addEventListener('DOMContentLoaded', () => {
     regYears.value = y;
     regMonths.value = m;
     regDays.value = d;
+    saveStateToLocalStorage();
   };
 
   window.setRegularPresetAll = function () {
@@ -437,15 +606,18 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {
       regYears.value = 5;
     }
+    saveStateToLocalStorage();
   };
 
   window.addQaza = function (amount) {
     const curr = parseInt(inputQazaDone.value, 10) || 0;
     inputQazaDone.value = curr + amount;
+    saveStateToLocalStorage();
   };
 
   window.setQaza = function (amount) {
     inputQazaDone.value = amount;
+    saveStateToLocalStorage();
   };
 
   window.setPlannerPace = function (pace) {
@@ -454,6 +626,7 @@ document.addEventListener('DOMContentLoaded', () => {
       card.classList.toggle('active', parseInt(card.dataset.pace, 10) === pace);
     });
     updatePlannerUI();
+    saveStateToLocalStorage();
   };
 
   // -------------------------------------------------------------------------
@@ -464,6 +637,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   inputName.addEventListener('input', (e) => {
     state.name = e.target.value.trim();
+    const errorMsg = document.getElementById('nameErrorMsg');
+    if (state.name) {
+      inputName.classList.remove('input-error');
+      if (errorMsg) errorMsg.style.display = 'none';
+    }
+    saveStateToLocalStorage();
+  });
+
+  inputName.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      btnNextStep.click();
+    }
   });
 
   // Date of Birth event listeners
@@ -516,6 +702,7 @@ document.addEventListener('DOMContentLoaded', () => {
       chipGridMissed.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       state.partialMissedPerDay = parseInt(btn.dataset.missed, 10);
+      saveStateToLocalStorage();
     });
   });
 
@@ -525,7 +712,20 @@ document.addEventListener('DOMContentLoaded', () => {
       chipGridMenstruation.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       state.avgMenstruationDays = parseInt(btn.dataset.days, 10);
+      saveStateToLocalStorage();
     });
+  });
+
+  // Generic input sync for duration & qaza fields
+  [regYears, regMonths, regDays, partYears, partMonths, partDays, inputQazaDone].forEach(inp => {
+    if (inp) {
+      inp.addEventListener('input', () => {
+        saveStateToLocalStorage();
+      });
+      inp.addEventListener('change', () => {
+        saveStateToLocalStorage();
+      });
+    }
   });
 
   // Navigation Prev / Next
@@ -534,6 +734,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   btnNextStep.addEventListener('click', () => {
+    // Validate Step 1 (First Name is mandatory)
+    if (state.currentStep === 1) {
+      if (!validateStep1()) return;
+    }
+
     // Validate Step 2 (Date of Birth)
     if (state.currentStep === 2) {
       const parsed = getParsedDOB(dobDay, dobMonth, dobYear);
@@ -593,6 +798,7 @@ document.addEventListener('DOMContentLoaded', () => {
       resultsDashboard.classList.add('active');
 
       renderDashboardResults(res);
+      saveStateToLocalStorage();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       alert(`Calculation Error: ${err.message}`);
@@ -739,6 +945,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   chkIncludeWitr.addEventListener('change', () => {
     updatePlannerUI();
+    saveStateToLocalStorage();
   });
 
   // -------------------------------------------------------------------------
@@ -748,6 +955,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!state.calculationResult) return;
     const inp = state.calculationResult.inputs;
 
+    if (adjName && inputName) adjName.value = inp.name || inputName.value.trim();
     if (adjDobDay && dobDay) adjDobDay.value = dobDay.value;
     if (adjDobMonth && dobMonth) adjDobMonth.value = dobMonth.value;
     if (adjDobYear && dobYear) adjDobYear.value = dobYear.value;
@@ -792,8 +1000,14 @@ document.addEventListener('DOMContentLoaded', () => {
     updateDatePreviews();
 
     // Collect updated values from drawer
+    const newName = (adjName && adjName.value.trim()) ? adjName.value.trim() : inputName.value.trim();
+    if (adjName && adjName.value.trim()) {
+      inputName.value = adjName.value.trim();
+      state.name = adjName.value.trim();
+    }
+
     const updatedInputs = {
-      name: inputName.value.trim(),
+      name: newName,
       gender: state.gender,
       dob: parsedAdjDOB.date,
       mandatoryAge: parseFloat(adjMandatoryAge.value) || 14,
@@ -828,6 +1042,7 @@ document.addEventListener('DOMContentLoaded', () => {
       inputQazaDone.value = updatedInputs.qazaAlreadyPrayed;
 
       renderDashboardResults(res);
+      saveStateToLocalStorage();
     } catch (e) {
       console.warn('Instant recalculate prevented:', e.message);
     }
@@ -849,6 +1064,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Drawer Instant Listeners
+  if (adjName) {
+    adjName.addEventListener('input', handleInstantAdjust);
+  }
+
   [adjDobDay, adjDobMonth, adjDobYear].forEach(inp => {
     if (inp) {
       inp.addEventListener('input', handleInstantAdjust);
@@ -944,15 +1163,18 @@ Generated with Lifetime Missed Salah Calculator`;
     }, 2800);
   }
 
-  // Print Report
-  btnPrintReport.addEventListener('click', () => {
-    window.print();
-  });
+  // Export / Print Report via native browser print
+  if (btnPrintReport) {
+    btnPrintReport.addEventListener('click', () => {
+      window.print();
+    });
+  }
 
   // -------------------------------------------------------------------------
   // Initialization
   // -------------------------------------------------------------------------
   updateDatePreviews();
   updateStepperUI();
+  loadStateFromLocalStorage();
 });
 

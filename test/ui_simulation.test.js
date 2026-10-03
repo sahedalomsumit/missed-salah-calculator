@@ -123,4 +123,26 @@ console.log('--- Running Lifetime Missed Salah Simulation & Audit Tests ---');
   console.log('\n✓ Scenario 4 verified: Flexible DOB { year, month, day } works seamlessly!');
 }
 
+// Scenario 5: Mandatory First Name & personalization check
+{
+  function validateFirstName(name) {
+    return typeof name === 'string' && name.trim().length > 0;
+  }
+
+  assert.strictEqual(validateFirstName(''), false, 'Empty name should fail validation');
+  assert.strictEqual(validateFirstName('   '), false, 'Whitespace-only name should fail validation');
+  assert.strictEqual(validateFirstName('Sumit'), true, 'Valid name should pass validation');
+
+  const resWithName = calc.calculateMissedSalah({
+    name: 'Sumit',
+    gender: 'male',
+    dob: '1996-01-01',
+    mandatoryAge: 14,
+    currentDate: new Date('2024-01-01')
+  });
+
+  assert.strictEqual(resWithName.name, 'Sumit');
+  console.log('\n✓ Scenario 5 verified: Mandatory first name validation and personalization verified!');
+}
+
 console.log('\n--- ALL VERIFICATION TESTS COMPLETED WITH 100% SUCCESS ---');

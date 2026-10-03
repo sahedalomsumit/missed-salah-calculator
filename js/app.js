@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
         runCalculationAndDisplay();
       } else if (data.currentStep) {
         const targetStep = Math.min(Math.max(1, parseInt(data.currentStep, 10)), getTotalSteps());
-        goToStep(targetStep);
+        goToStep(targetStep, true);
       }
       return true;
     } catch (e) {
@@ -371,9 +371,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     stepperStepName.textContent = `Step ${current} of ${total}: ${title}`;
     stepperCounter.textContent = `${current} / ${total}`;
-    progressFill.style.width = `${((current) / total) * 100}%`;
+
+    // Animate progress bar smoothly if GSAP is available, else fall back
+    const pct = ((current) / total) * 100;
+    if (window.SalahAnimations) {
+      window.SalahAnimations.animateProgressBar(progressFill, pct);
+    } else {
+      progressFill.style.width = `${pct}%`;
+    }
 
     renderStepperDots();
+    if (window.SalahAnimations) window.SalahAnimations.animateStepperDots();
 
     // Toggle Back button visibility
     btnPrevStep.style.visibility = current === 1 ? 'hidden' : 'visible';
@@ -412,7 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return true;
   }
 
-  function goToStep(stepIndex) {
+  function goToStep(stepIndex, skipScroll = false) {
     const total = getTotalSteps();
     if (stepIndex < 1 || stepIndex > total) return;
 
@@ -432,22 +440,33 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    const prevStep = state.currentStep;
     state.currentStep = stepIndex;
 
-    // Show only active step view
-    stepViews.forEach((view, index) => {
-      if (view) {
-        if (index + 1 === stepIndex) {
-          view.classList.add('active');
-        } else {
-          view.classList.remove('active');
+    // Animated step transition (GSAP) or instant fallback
+    const outgoing = stepViews[prevStep - 1] || null;
+    const incoming = stepViews[stepIndex - 1] || null;
+    const direction = stepIndex >= prevStep ? 'forward' : 'backward';
+
+    if (window.SalahAnimations && outgoing !== incoming && !skipScroll) {
+      // GSAP handles class toggling internally for the transition
+      stepViews.forEach((v, i) => { if (v && i + 1 !== stepIndex && i + 1 !== prevStep) v.classList.remove('active'); });
+      window.SalahAnimations.animateStepTransition(incoming, outgoing, direction);
+    } else {
+      // Instant fallback (used on restore from localStorage)
+      stepViews.forEach((view, index) => {
+        if (view) {
+          if (index + 1 === stepIndex) view.classList.add('active');
+          else view.classList.remove('active');
         }
-      }
-    });
+      });
+    }
 
     updateStepperUI();
     saveStateToLocalStorage();
-    wizardCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!skipScroll) {
+      wizardCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   // -------------------------------------------------------------------------
@@ -800,6 +819,11 @@ document.addEventListener('DOMContentLoaded', () => {
       renderDashboardResults(res);
       saveStateToLocalStorage();
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Animate dashboard sections in after a brief settle
+      if (window.SalahAnimations) {
+        window.SalahAnimations.animateDashboardReveal();
+      }
     } catch (err) {
       alert(`Calculation Error: ${err.message}`);
     }
@@ -885,15 +909,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Toggle Audit Accordion
+  // Toggle Audit Accordion — with GSAP fade animation
   btnToggleAudit.addEventListener('click', () => {
     const isOpen = auditContent.classList.contains('open');
     if (isOpen) {
-      auditContent.classList.remove('open');
+      if (window.SalahAnimations) {
+        window.SalahAnimations.animateAuditClose(auditContent, () => {
+          auditContent.classList.remove('open');
+          gsap && gsap.set(auditContent, { clearProps: 'opacity,y' });
+        });
+      } else {
+        auditContent.classList.remove('open');
+      }
       btnToggleAudit.setAttribute('aria-expanded', 'false');
     } else {
       auditContent.classList.add('open');
       btnToggleAudit.setAttribute('aria-expanded', 'true');
+      if (window.SalahAnimations) {
+        window.SalahAnimations.animateAuditOpen(auditContent);
+      }
     }
   });
 
@@ -1158,9 +1192,17 @@ Generated with Lifetime Missed Salah Calculator`;
   function showToast(msg) {
     toastNotice.textContent = msg;
     toastNotice.classList.add('show');
+    if (window.SalahAnimations) {
+      window.SalahAnimations.animateToastIn(toastNotice);
+    }
     setTimeout(() => {
-      toastNotice.classList.remove('show');
-    }, 2800);
+      if (window.SalahAnimations) {
+        window.SalahAnimations.animateToastOut(toastNotice);
+        setTimeout(() => toastNotice.classList.remove('show'), 220);
+      } else {
+        toastNotice.classList.remove('show');
+      }
+    }, 2600);
   }
 
   // Export / Print Report via native browser print

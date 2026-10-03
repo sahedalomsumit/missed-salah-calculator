@@ -321,7 +321,7 @@ body::before {
   backdrop-filter: blur(16px);
   box-shadow: var(--shadow-lg);
   position: relative;
-  overflow: hidden;
+  /* overflow: hidden removed — GSAP step slide animations need room to breathe */
   transition: var(--transition-normal);
 }
 
@@ -336,23 +336,21 @@ body::before {
 }
 
 .step-view {
-  display: none;
-  animation: fadeInStep 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  /* GSAP controls opacity/transform — base state is invisible & inert */
+  display: block;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* Remove old CSS keyframe — GSAP now drives the entrance */
 }
 
 .step-view.active {
-  display: block;
-}
-
-@keyframes fadeInStep {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  opacity: 1;
+  pointer-events: auto;
+  position: relative; /* in-flow only when active */
 }
 
 .step-badge {
